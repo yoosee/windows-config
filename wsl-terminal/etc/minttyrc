@@ -1,0 +1,14 @@
+BoldAsFont=-1
+Font=Ricty
+FontHeight=11
+Locale=C
+Charset=UTF-8
+FontWeight=400
+FontIsBold=no
+Transparency=medium
+OpaqueWhenFocused=no
+CursorType=block
+RightClickAction=paste
+Columns=100
+Rows=60
+IMECursorColour=255,0,0
