@@ -5,8 +5,6 @@
 ## Windows の操作を emacs のキーバインドで行うための設定（Keyhac版）ver.20170520_01
 ##
 
-## modification from fakeymacs
-
 # このスクリプトは、Keyhac for Windows ver 1.75 以降で動作します。
 #   https://sites.google.com/site/craftware/keyhac-ja
 # スクリプトですので、使いやすいようにカスタマイズしてご利用ください。
@@ -166,11 +164,14 @@ def configure(keymap):
                             "ttermpro.exe",       # TeraTerm
                             "MobaXterm.exe"]      # MobaXterm
 
+    # C-t や C-w などいくつかのキーバインドを標準挙動にしたいブラウザ
+    browser_target = ["chrome.exe"]
+
     # clipboard 監視の対象外とするアプリケーションソフトを指定する
     not_clipboard_target = ["EXCEL.EXE"]          # Excel
 
     # 日本語キーボードかどうかを指定する（True: 日本語キーボード、False: 英語キーボード）
-    is_japanese_keyboard = True
+    is_japanese_keyboard = False
 
     # 左右どちらの Ctrlキーを使うかを指定する（"L": 左、"R": 右）
     side_of_ctrl_key = "L"
@@ -182,7 +183,7 @@ def configure(keymap):
     use_emacs_ime_mode = True
 
     # emacs日本語入力モードを切り替える（トグルする）キーを指定する
-    toggle_emacs_ime_mode_key = "C-t"
+    toggle_emacs_ime_mode_key = "C-i"
 
     # emacs日本語入力モードが有効なときに表示するバルーンメッセージを指定する
     # emacs_ime_mode_balloon_message = None
@@ -910,7 +911,7 @@ def configure(keymap):
     define_key(keymap_emacs, "C-e",        reset_search(reset_undo(reset_counter(mark(move_end_of_line)))))
     define_key(keymap_emacs, "M-S-Comma",  reset_search(reset_undo(reset_counter(mark(beginning_of_buffer)))))
     define_key(keymap_emacs, "M-S-Period", reset_search(reset_undo(reset_counter(mark(end_of_buffer)))))
-    define_key(keymap_emacs, "C-l",        reset_search(reset_undo(reset_counter(recenter))))
+  #  define_key(keymap_emacs, "C-l",        reset_search(reset_undo(reset_counter(recenter))))
 
     define_key(keymap_emacs, "Left",     reset_search(reset_undo(reset_counter(mark(repeat(backward_char))))))
     define_key(keymap_emacs, "Right",    reset_search(reset_undo(reset_counter(mark(repeat(forward_char))))))
@@ -931,7 +932,7 @@ def configure(keymap):
     define_key(keymap_emacs, "C-Delete", reset_search(reset_undo(reset_counter(reset_mark(repeat3(kill_word))))))
     define_key(keymap_emacs, "M-d",      reset_search(reset_undo(reset_counter(reset_mark(repeat3(kill_word))))))
     define_key(keymap_emacs, "C-k",      reset_search(reset_undo(reset_counter(reset_mark(repeat3(kill_line))))))
-    define_key(keymap_emacs, "C-w",      reset_search(reset_undo(reset_counter(reset_mark(kill_region)))))
+ #   define_key(keymap_emacs, "C-w",      reset_search(reset_undo(reset_counter(reset_mark(kill_region)))))
     define_key(keymap_emacs, "M-w",      reset_search(reset_undo(reset_counter(reset_mark(kill_ring_save)))))
     define_key(keymap_emacs, "C-c",      reset_search(reset_undo(reset_counter(reset_mark(kill_ring_save)))))
     define_key(keymap_emacs, "C-y",      reset_search(reset_undo(reset_counter(reset_mark(repeat(yank))))))
