@@ -1,0 +1,122 @@
+# -*- mode: python; coding: utf-8-with-signature-dos -*-
+
+from keyhac import *
+
+
+def configure(keymap):
+    excluded_processes = {
+        "bash.exe",
+        "mintty.exe",
+        "emacs.exe",
+        "emacs-w32.exe",
+        "gvim.exe",
+        "xyzzy.exe",
+        "putty.exe",
+        "ttermpro.exe",
+        "MobaXterm.exe",
+        "VirtualBox.exe",
+    }
+
+    def is_target(window):
+        return window is not None and window.getProcessName() not in excluded_processes
+
+    km = keymap.defineWindowKeymap(check_func=is_target)
+
+    state = {"mark": False}
+
+    def send(*keys):
+        return keymap.InputKeyCommand(*keys)
+
+    def bind(key, command):
+        km[key] = command
+
+    def bind_multi(prefix, key, command):
+        km[prefix][key] = command
+
+    def reset_mark():
+        state["mark"] = False
+
+    def set_mark():
+        state["mark"] = True
+
+    def move(*keys):
+        command = send(*keys)
+
+        def _inner():
+            if state["mark"]:
+                send("D-LShift")()
+                command()
+                send("U-LShift")()
+            else:
+                command()
+
+        return _inner
+
+    def run(*keys):
+        command = send(*keys)
+
+        def _inner():
+            command()
+            reset_mark()
+
+        return _inner
+
+    def keyboard_quit():
+        send("Esc")()
+        reset_mark()
+
+    def kill_region():
+        send("C-x")()
+        reset_mark()
+
+    def kill_line():
+        if state["mark"]:
+            kill_region()
+        else:
+            send("S-End", "C-x")()
+            reset_mark()
+
+    def clear_mark():
+        reset_mark()
+
+    km["C-x"] = keymap.defineMultiStrokeKeymap("C-x")
+    km["C-q"] = keymap.defineMultiStrokeKeymap("C-q")
+
+    bind("C-a", move("Home"))
+    bind("C-e", move("End"))
+    bind("C-b", move("Left"))
+    bind("C-f", move("Right"))
+    bind("C-p", move("Up"))
+    bind("C-n", move("Down"))
+
+    bind("C-h", run("Back"))
+    bind("C-d", run("Delete"))
+    bind("C-k", kill_line)
+    #bind("C-w", kill_region)
+    bind("C-c", run("C-c"))
+    bind("C-y", run("C-v"))
+    bind("C-z", run("C-z"))
+
+    bind("C-o", run("A-(25)"))
+    bind("C-m", run("Enter"))
+    bind("C-r", run("S-F3"))
+
+    bind_multi("C-x", "C-s", run("C-s"))
+
+    bind("C-Space", set_mark)
+    bind("C-g", keyboard_quit)
+
+    #bind("C-l", clear_mark)
+
+    passthrough_keys = [
+        "A","B","C","D","E","F","G","H","I","J","K","L","M",
+        "N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
+        "0","1","2","3","4","5","6","7","8","9",
+        "Space","Tab","Enter","Esc",
+        "Up","Down","Left","Right",
+        "Home","End","PageUp","PageDown",
+        "Back","Delete",
+    ]
+
+    for key in passthrough_keys:
+        bind_multi("C-q", key, run(key))
